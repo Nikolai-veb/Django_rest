@@ -96,7 +96,9 @@ class Review(models.Model):
     email = models.EmailField()
     name = models.CharField("Имя", max_length=1000)
     text = models.TextField("Текст", max_length=50000)
-    parent = models.ForeignKey('self', verbose_name="Родитель", on_delete=models.CASCADE, null=True, blank=True)
+    parent = models.ForeignKey(
+        'self', verbose_name="Родитель", on_delete=models.CASCADE, null=True, blank=True, related_name="children"
+    )
     product = models.ForeignKey(Product, verbose_name="Товар", on_delete=models.CASCADE, related_name="reviews")
     create = models.DateTimeField(auto_now_add=True)
     update = models.DateTimeField(auto_now=True)
