@@ -10,7 +10,7 @@ from django.utils.text import slugify
 class Category(models.Model):
     """Категории"""
     name = models.CharField(max_length=50)
-    slug = models.SlugField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=50, unique=True, db_index=True)
 
     class Meta:
         verbose_name = "Категория"
@@ -29,8 +29,8 @@ class Product(models.Model):
     category = models.ForeignKey(Category, verbose_name="Катеория", on_delete=models.CASCADE, related_name="products")
     name = models.CharField("Название товара", max_length=150)
     poster = models.ImageField("Изображение", upload_to="posters/", blank=True, null=True)
-    slug = models.SlugField(max_length=300, unique=True)
-    discription = models.TextField("Описание")
+    slug = models.SlugField(max_length=300, unique=True, db_index=True)
+    description = models.TextField("Описание")
     price = models.DecimalField("Цена", max_digits=10, decimal_places=2)
     stock = models.PositiveIntegerField("Склад", default=0)
     draft = models.BooleanField("Модераця", default=False)
@@ -53,7 +53,7 @@ class ProductImages(models.Model):
     """Изобржение продукта"""
     name = models.CharField("Имя", max_length=150)
     images = models.ImageField("Изобраение", upload_to="product_images/", null=True, blank=True)
-    slug = models.SlugField(max_length=150, unique=True)
+    slug = models.SlugField(max_length=150, unique=True, db_index=True)
     product = models.ForeignKey(Product, verbose_name="Товар", related_name="product_images", on_delete=models.CASCADE)
 
     class Meta:

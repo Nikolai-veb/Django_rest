@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
-from .models import Category, Product, Rating, RatingStar, Review, ProductImages
-from PIL import Image
+from .models import Category, Product, RatingStar, Review, ProductImages
+
 
 
 @admin.register(Category)
@@ -38,39 +38,37 @@ class ProductAdmin(admin.ModelAdmin):
     list_editable = ("draft",)
     search_fields = ("name", "price", "category")
     prepopulated_fields = {'slug': ('name', 'price')}
-    inlines = [ProductImagesInline,]
+    inlines = [ProductImagesInline, ]
     fieldsets = (
-        (None,{
-            "fields":(("name", "category"),)
+        (None, {
+            "fields": (("name", "category"),)
         }),
-        (None,{
-            "fields":("discription",)
+        (None, {
+            "fields": ("discription",)
         }),
-        (None,{
-            "fields":("slug",)
+        (None, {
+            "fields": ("slug",)
         }),
-        (None,{
-            "fields":("poster",)
+        (None, {
+            "fields": ("poster",)
         }),
-        (None,{
-            "fields":(("price", "stock", "draft"))
+        (None, {
+            "fields": (("price", "stock", "draft"))
         }),
-       # (None,{
-           # "fields":("create", "update")
-       # })
+        # (None,{
+        # "fields":("create", "update")
+        # })
     )
 
 
 @admin.register(ProductImages)
 class ProductImagesAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "product", "slug", "get_image")
-    list_display_links =("name",)
+    list_display_links = ("name",)
     readonly_fields = ("get_image",)
     list_filter = ("name", "product")
     search_fields = ("name", "product")
     prepopulated_fields = {'slug': ('name', 'product')}
-
-
 
     def get_image(self, odj):
         """Функцыя показа изображения"""
@@ -89,4 +87,3 @@ class ReviewAdmin(admin.ModelAdmin):
     list_dislay = ("name", "email", "parent", "product", "create")
     list_filter = ("name", "email", "product", "create")
     searche_fields = ("name", "product")
-
