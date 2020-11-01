@@ -44,7 +44,7 @@ class ProductAdmin(admin.ModelAdmin):
             "fields": (("name", "category"),)
         }),
         (None, {
-            "fields": ("discription",)
+            "fields": ("description",)
         }),
         (None, {
             "fields": ("slug",)
