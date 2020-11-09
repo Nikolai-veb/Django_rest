@@ -52,7 +52,12 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        exclude = ("draft",)
+        fields = (
+            "id", "category", "reviews",
+            "name", "poster", "slug",
+            "description", "price", "stock", "create",
+            "update",
+        )
 
 
 class CreateRatingSerializer(serializers.ModelSerializer):
@@ -63,7 +68,7 @@ class CreateRatingSerializer(serializers.ModelSerializer):
         fields = ("star", "product")
 
     def create(self, validated_data):
-        rating = Rating.objects.update_or_create(
+        rating, _ = Rating.objects.update_or_create(
             ip=validated_data.get("ip", None),
             product=validated_data.get("product", None),
             defaults={"star": validated_data.get("star")}

@@ -1,51 +1,46 @@
 from django.db import models
+from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Product
 from .serializers import ProductListSerializer, ProductDetailSerializer, ReviewCreateSerializer, CreateRatingSerializer
-from .service import get_client_ip
+from .service import get_client_ip, ProductFilter
 
 
-class ProductListView(APIView):
+class ProductListView(generics.ListAPIView):
     """Сonclusion list products"""
+    serializer_class = ProductListSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    # Connecting filters in Django
+    # filter_backends = (DjangoFilterBackend)
+    # filterset_class = ProductFilter
 
-    def get(self, request):
+    def get_queryset(self):
         products = Product.objects.filter(draft=False).annotate(
-            rating_user=models.Count("ratings", filter=models.Q(ratings__ip=get_client_ip(request)))
+            rating_user=models.Count("ratings", filter=models.Q(ratings__ip=get_client_ip(self.request)))
         ).annotate(
             middle_star=models.Sum(models.F("ratings__star")) / models.Count(models.F("ratings"))
         )
-        serializer = ProductListSerializer(products, many=True)
-        return Response(serializer.data)
+
+        return products
 
 
-class ProductDetailView(APIView):
+class ProductDetailView(generics.RetrieveAPIView):
     """Сonclusion detail product"""
-
-    def get(self, request, pk):
-        product = Product.objects.get(id=pk)
-        serializer = ProductDetailSerializer(product)
-        return Response(serializer.data)
+    queryset = Product.objects.filter(draft=False)
+    serializer_class = ProductDetailSerializer
 
 
-class ReviewCreateView(APIView):
+class ReviewCreateView(generics.CreateAPIView):
     """Create reviews"""
-
-    def post(self, request):
-        review = ReviewCreateSerializer(data=request.data)
-        if review.is_valid():
-            review.save()
-        return Response(status=200)
+    serializer_class = ReviewCreateSerializer
 
 
-class AddRatingView(APIView):
+class AddRatingView(generics.CreateAPIView):
     """Add rating"""
+    serializer_class = CreateRatingSerializer
 
-    def post(self, request):
-        serializer = CreateRatingSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(ip=get_client_ip(request))
-            return Response(status=201)
-        else:
-            return Response(status=400)
+    def perform_create(self, serializer):
+        serializer.save(ip=get_client_ip(self.request))
