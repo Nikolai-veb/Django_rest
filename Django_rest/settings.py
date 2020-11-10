@@ -42,6 +42,10 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
     'drf_yasg',
+
+    'oauth2_provider',
+    'social_django',
+    'rest_framework_social_oauth2',
     'django_filters',
 
     'shop.apps.ShopConfig',
@@ -137,16 +141,33 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
 
+SOCIAL_AUTH_VK_OAUTH2_KEY = '<your app id goes here>'
+SOCIAL_AUTH_VK_OAUTH2_SECRET = '<your app secret goes here>'
+
+AUTHENTICATION_BACKENDS = (
+
+
+    'social_core.backends.vk.VKOAuth2',
+    'rest_framework_social_oauth2.backends.DjangoOAuth2',
+    # Django
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_AUTHENTICATION_CLASS': (
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        'rest_framework_social_oauth2.authentication.SocialAuthentication',
     ),
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 5
 }
 
 
@@ -179,3 +200,4 @@ SIMPLE_JWT = {
     'AUDIENCE': None,
     'ISSUER':None,
 }
+

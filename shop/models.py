@@ -52,7 +52,7 @@ class Product(models.Model):
 class ProductImages(models.Model):
     """Изобржение продукта"""
     name = models.CharField("Имя", max_length=150)
-    images = models.ImageField("Изобраение", upload_to="product_images/", null=True, blank=True)
+    images = models.ImageField("Изобраение", upload_to="product_images/")
     slug = models.SlugField(max_length=150, unique=True, db_index=True)
     product = models.ForeignKey(Product, verbose_name="Товар", related_name="product_images", on_delete=models.CASCADE)
 

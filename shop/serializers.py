@@ -1,12 +1,6 @@
 from rest_framework import serializers
 
-from .models import Product, Category, Review, Rating
-
-
-class FilterReviewSerializer(serializers.ListSerializer):
-    def to_representation(self, data):
-        data = data.filter(parent=None)
-        return super().to_representation(data)
+from .models import Product, Category, Review, Rating, ProductImages
 
 
 class RecursiveSerializer(serializers.Serializer):
@@ -29,9 +23,16 @@ class ReviewSerializer(serializers.ModelSerializer):
     children = RecursiveSerializer(many=True)
 
     class Meta:
-        list_serializer_class = FilterReviewSerializer
         model = Review
         fields = ("email", "name", "text", "children")
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    """Serializer Category"""
+
+    class Meta:
+        model = Category
+        fields = "__all__"
 
 
 class ProductListSerializer(serializers.ModelSerializer):
@@ -49,15 +50,21 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     """Detail Products"""
     category = serializers.SlugRelatedField(slug_field="name", read_only=True)
     reviews = ReviewSerializer(many=True)
+    product_images = serializers.SlugRelatedField(slug_field="name", read_only=True)
+    ratings = serializers.SlugRelatedField(slug_field="name", read_only=True)
 
     class Meta:
         model = Product
-        fields = (
-            "id", "category", "reviews",
-            "name", "poster", "slug",
-            "description", "price", "stock", "create",
-            "update",
-        )
+        fields = "__all__"
+
+
+class ProductImageSerializer(serializers.ModelSerializer):
+    """Serializer Product Images"""
+    product = serializers.SlugRelatedField(slug_field="name", read_only=True)
+
+    class Meta:
+        model = ProductImages
+        fields = "__all__"
 
 
 class CreateRatingSerializer(serializers.ModelSerializer):

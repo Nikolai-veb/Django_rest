@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from .models import Category, Product, RatingStar, Review, ProductImages, Rating
+from PIL import Image
 
 
 @admin.register(Category)
