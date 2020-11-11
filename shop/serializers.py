@@ -3,6 +3,22 @@ from rest_framework import serializers
 from .models import Product, Category, Review, Rating, ProductImages
 
 
+class FiletrReviewListSerializer(serializers.ListSerializer):
+    """Add only review parent"""
+
+    def to_representation(self, data):
+        data = data.filter(parent=None)
+        return super().to_representation(data)
+
+
+class RatingStarSerializer(serializers.ModelSerializer):
+    """Star"""
+
+    class Meta:
+        model = Rating
+        fields = ("star",)
+
+
 class RecursiveSerializer(serializers.Serializer):
     """recursive children"""
 
@@ -23,6 +39,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     children = RecursiveSerializer(many=True)
 
     class Meta:
+        list_serializer_filter_class = FiletrReviewListSerializer
         model = Review
         fields = ("email", "name", "text", "children")
 
@@ -46,25 +63,25 @@ class ProductListSerializer(serializers.ModelSerializer):
         fields = ("category", "name", "description", "rating_user", "middle_star")
 
 
-class ProductDetailSerializer(serializers.ModelSerializer):
-    """Detail Products"""
-    category = serializers.SlugRelatedField(slug_field="name", read_only=True)
-    reviews = ReviewSerializer(many=True)
-    product_images = serializers.SlugRelatedField(slug_field="name", read_only=True)
-    ratings = serializers.SlugRelatedField(slug_field="name", read_only=True)
-
-    class Meta:
-        model = Product
-        fields = "__all__"
-
-
 class ProductImageSerializer(serializers.ModelSerializer):
-    """Serializer Product Images"""
+    """Product Images"""
     product = serializers.SlugRelatedField(slug_field="name", read_only=True)
 
     class Meta:
         model = ProductImages
         fields = "__all__"
+
+
+class ProductDetailSerializer(serializers.ModelSerializer):
+    """Detail Products"""
+    category = serializers.SlugRelatedField(slug_field="name", read_only=True)
+    reviews = ReviewSerializer(many=True)
+    product_images = ProductImageSerializer(many=True)
+    ratings = RatingStarSerializer(many=True)
+
+    class Meta:
+        model = Product
+        exclude = ("draft",)
 
 
 class CreateRatingSerializer(serializers.ModelSerializer):
