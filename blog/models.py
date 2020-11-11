@@ -49,8 +49,8 @@ class Comment(models.Model):
     email = models.EmailField()
     name = models.CharField("Имя", max_length=1000)
     text = models.TextField("Текст", max_length=50000)
-    parent = models.ForeignKey('self', verbose_name="Родитель", on_delete=models.CASCADE, null=True, blank=True)
-    article = models.ForeignKey(Article, verbose_name="Статья", on_delete=models.CASCADE, related_name="reviews")
+    parent = models.ForeignKey('self', verbose_name="Родитель", on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+    article = models.ForeignKey(Article, verbose_name="Статья", on_delete=models.CASCADE, related_name="comments")
     create = models.DateTimeField(auto_now_add=True)
     update = models.DateTimeField(auto_now=True)
 
