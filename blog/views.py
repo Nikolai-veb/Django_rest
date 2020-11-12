@@ -3,9 +3,10 @@ from django.db.models import Q
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from  django_filters.rest_framework import  DjangoFilterBackend
 from .models import Tag, Article, Comment
 from .serializers import TagSerializer, ArticleSerializer, ArticleDetailSerializer, CommentCreateSerializer
+from .service import ArticleFilter
 
 
 class TagView(generics.ListAPIView):
@@ -18,6 +19,8 @@ class ArticleView(generics.ListAPIView):
     """View Articles"""
     queryset = Article.objects.filter(draft=False)
     serializer_class = ArticleSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = ArticleFilter
 
 
 class ArticleDetailView(generics.RetrieveAPIView):
