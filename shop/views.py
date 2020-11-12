@@ -11,7 +11,7 @@ from .serializers import (ProductListSerializer, ProductDetailSerializer,
                           CategorySerializer, ProductImageSerializer
                           )
 
-from .service import get_client_ip
+from .service import get_client_ip, ProductFilter, ImageProductFilter
 
 
 class CategoryView(generics.ListAPIView):
@@ -26,8 +26,8 @@ class ProductListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     # Connecting filters in Django
-    # filter_backends = (DjangoFilterBackend)
-    # filterset_class = ProductFilter
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = ProductFilter
 
     def get_queryset(self):
         products = Product.objects.filter(draft=False).annotate(
@@ -54,6 +54,8 @@ class ProductImageView(generics.ListAPIView):
     """Images Product"""
     queryset = ProductImages.objects.all()
     serializer_class = ProductImageSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = ImageProductFilter
 
 
 class ReviewCreateView(generics.CreateAPIView):
