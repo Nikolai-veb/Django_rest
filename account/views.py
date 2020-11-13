@@ -4,12 +4,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from account.models import Profile
-from account.serializers import ProfileSerializer, CreateProfileSerializer
+from account.serializers import ProfileSerializer, CreateProfileSerializer, UpDateProfileSerializer
 
 
 class ProfileView(generics.RetrieveAPIView):
     """Account"""
-    queryset = Profile.objects.all()
+    queryset = Profile.objects.filter(action=True)
     serializer_class = ProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -17,3 +17,10 @@ class ProfileView(generics.RetrieveAPIView):
 class CreateProfileView(generics.CreateAPIView):
     """"Create Account"""
     serializer_class = CreateProfileSerializer
+
+
+class UpDateProfileView(generics.UpdateAPIView):
+    """Update Account"""
+    serializer_class = UpDateProfileSerializer
+    queryset = Profile.objects.all()
+

@@ -27,3 +27,11 @@ class CreateProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = "__all__"
+
+
+class UpDateProfileSerializer(serializers.ModelSerializer):
+    """Update Profile"""
+
+    class Meta:
+        model = Profile
+        fields = "__all__"

@@ -9,6 +9,7 @@ class Profile(models.Model):
     email = models.EmailField(null=True, blank=True)
     date_birth = models.DateTimeField("Дата рождения", blank=True, null=True)
     photo = models.ImageField("Фото", upload_to='profile/%Y/%m/%d', null=True, blank=True)
+    action = models.BooleanField("Статус", default=False)
 
     class Meta:
         verbose_name = "Профиль"
