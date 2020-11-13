@@ -9,7 +9,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = "__all__"
+        fields = ("first_name", "last_name", "password")
+
 
 class ProfileSerializer(serializers.ModelSerializer):
     """Serializer Profile"""
@@ -22,10 +23,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class CreateProfileSerializer(serializers.ModelSerializer):
     """Create profile"""
-    first_name = serializers.SlugRelatedField(slug_field="first_name", read_only=True)
-    last_name = serializers.SlugRelatedField(slug_field='last_name', read_only=True)
-    password = serializers.SlugRelatedField(slug_field='password', read_only=True)
 
     class Meta:
         model = Profile
-        fields = ("nik_name", "email", "date_birth", "photo", "password", "first_name", "last_name")
+        fields = "__all__"
